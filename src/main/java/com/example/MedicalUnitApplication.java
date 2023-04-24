@@ -4,27 +4,26 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Initializes the hospital management application.
+ */
 @SpringBootApplication
-@RestController
-public class MedicalUnitApplication extends SpringBootServletInitializer
-{
+public class MedicalUnitApplication extends SpringBootServletInitializer {
+
+	/**
+	 * Configures the application.
+	 */
 	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
-	{
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(MedicalUnitApplication.class);
 	}
 
-	public static void main(String[] args)
-	{
+	/**
+	 * Starts the application.
+	 */
+	public static void main(String[] args) {
 		SpringApplication.run(MedicalUnitApplication.class, args);
 	}
 
-	@RequestMapping(value = "/hello")
-	public String helloWorld()
-	{
-		return "Hello World, Peter";
-	}
 }
