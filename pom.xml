@@ -41,6 +41,7 @@
 	</dependencies>
 
 	<build>
+	 <finalName>e-Hospital-Unit</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
