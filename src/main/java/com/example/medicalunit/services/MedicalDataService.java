@@ -1,52 +1,64 @@
 package com.example.medicalunit.services;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.medicalunit.Patient;
-import com.example.medicalunit.Pharmacist;
-import com.example.medicalunit.Physician;
 import com.example.medicalunit.dtos.PatientMedicalRecordDTO;
+import com.example.medicalunit.model.Patient;
+import com.example.medicalunit.model.Pharmacist;
+import com.example.medicalunit.model.Physician;
+import com.example.medicalunit.model.Gender;
 
+/**
+ * This class manages medical data and provides methods to retrieve, update and add data related to medical records, patients, physicians and pharmacists
+ */
 public class MedicalDataService {
-    private static final Map<String, PatientMedicalRecordDTO> patientsMedicalRecords = new LinkedHashMap<>();
-    private static final Map<String, Patient> patients = new LinkedHashMap<>();
-    private static final Map<String, Physician> physicians = new LinkedHashMap<>();
-    private static final Map<String, Pharmacist> pharmacists = new LinkedHashMap<>();
 
-    // pre-populate patients with id, name, age, gender
+    // Use interfaces to define types to allow for easier refactoring
+    private static final Map<String, PatientMedicalRecordDTO> patientsMedicalRecords = new HashMap<>();
+    private static final Map<String, Patient> patients = new HashMap<>();
+    private static final Map<String, Physician> physicians = new HashMap<>();
+    private static final Map<String, Pharmacist> pharmacists = new HashMap<>();
+
+    /**
+     * This method populates the patients map with sample data
+     */
     public static void populatePatients() {
-
-        Patient p1 = new Patient("1", "John", "18", "MALE");
-        Patient p2 = new Patient("2", "Jane", "19", "FEMALE");
+        Patient p1 = new Patient("1", "John", 18, Gender.MALE);
+        Patient p2 = new Patient("2", "Jane", 19, Gender.FEMALE);
 
         patients.put(p1.getId(), p1);
         patients.put(p2.getId(), p2);
     }
 
-    // pre-populate physicians with id, name, age, gender
+    /**
+     * This method populates the physicians map with sample data
+     */
     public static void populatePhysicians() {
-        Physician p1 = new Physician("10", "William", "45", "MALE");
-        Physician p2 = new Physician("20", "Beth", "40", "FEMALE");
+        Physician p1 = new Physician("10", "William", 45, Gender.MALE);
+        Physician p2 = new Physician("20", "Beth", 40, Gender.FEMALE);
 
         physicians.put(p1.getId(), p1);
         physicians.put(p2.getId(), p2);
     }
 
-    // pre-populate pharmacist with id, name, age, gender
-    public static void populatePharmacist() {
-        Pharmacist p1 = new Pharmacist("100", "Jack", "30", "MALE");
-        Pharmacist p2 = new Pharmacist("200", "Ellen", "31", "FEMALE");
+    /**
+     * This method populates the pharmacists map with sample data
+     */
+    public static void populatePharmacists() {
+        Pharmacist p1 = new Pharmacist("100", "Jack", 30, Gender.MALE);
+        Pharmacist p2 = new Pharmacist("200", "Ellen", 31, Gender.FEMALE);
 
         pharmacists.put(p1.getId(), p1);
         pharmacists.put(p2.getId(), p2);
     }
 
-    // pre-populate patients with id, name, age, gender
+    /**
+     * This method populates the patientsMedicalRecords map with sample data
+     */
     public static void populatePatientMedicalRecords() {
-
         PatientMedicalRecordDTO p1 = new PatientMedicalRecordDTO("57282g2bbh", "1", "Cough and fever");
         PatientMedicalRecordDTO p2 = new PatientMedicalRecordDTO("672g2by272", "2", "Typhoid");
 

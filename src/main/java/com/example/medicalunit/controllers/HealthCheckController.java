@@ -4,10 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.medicalunit.Patient;
-import com.example.medicalunit.Pharmacist;
-import com.example.medicalunit.Physician;
 import com.example.medicalunit.dtos.PatientMedicalRecordDTO;
+import com.example.medicalunit.model.Patient;
+import com.example.medicalunit.model.Pharmacist;
+import com.example.medicalunit.model.Physician;
 import com.example.medicalunit.services.MedicalDataService;
 
 import java.util.List;
@@ -179,7 +179,7 @@ public class HealthCheckController {
     public ResponseEntity<String> populateMedicalRecords() {
 
         MedicalDataService.populatePatients();
-        MedicalDataService.populatePharmacist();
+        MedicalDataService.populatePharmacists();
         MedicalDataService.populatePhysicians();
         MedicalDataService.populatePatientMedicalRecords();
 
