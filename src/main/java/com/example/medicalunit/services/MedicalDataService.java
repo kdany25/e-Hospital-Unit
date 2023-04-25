@@ -1,6 +1,7 @@
 package com.example.medicalunit.services;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,8 @@ import com.example.medicalunit.model.Physician;
 import com.example.medicalunit.model.Gender;
 
 /**
- * This class manages medical data and provides methods to retrieve, update and add data related to medical records, patients, physicians and pharmacists
+ * This class manages medical data and provides methods to retrieve, update and
+ * add data related to medical records, patients, physicians and pharmacists
  */
 public class MedicalDataService {
 
@@ -26,8 +28,11 @@ public class MedicalDataService {
      * This method populates the patients map with sample data
      */
     public static void populatePatients() {
-        Patient p1 = new Patient("1", "John", 18, Gender.MALE);
-        Patient p2 = new Patient("2", "Jane", 19, Gender.FEMALE);
+        Patient p1 = new Patient("8f99a086-05df-48da-9a00-5a3d7729aff1", "muhire", "philippe", "philly",
+                "philipe@gmail.com", "PATIENT", 18, Gender.MALE);
+
+        Patient p2 = new Patient("9210f0a5-c8b2-44e9-9702-62d40a0baa93", "habimana", "yannick", "yanny",
+                "yannick@gmail.com", "PATIENT", 29, Gender.MALE);
 
         patients.put(p1.getId(), p1);
         patients.put(p2.getId(), p2);
@@ -37,30 +42,41 @@ public class MedicalDataService {
      * This method populates the physicians map with sample data
      */
     public static void populatePhysicians() {
-        Physician p1 = new Physician("10", "William", 45, Gender.MALE);
-        Physician p2 = new Physician("20", "Beth", 40, Gender.FEMALE);
+        Physician p1 = new Physician("32349329-5eef-4882-b5aa-25f2fae1b5cd", "umurerwa", "gisele", "gigi",
+                "gisele@gmail.com", "PHYSICIAN", 41, Gender.FEMALE);
+        Physician p2 = new Physician("d2aac6aa-019a-4933-b152-5090b7ac56d4", "abimana", "henriette", "henry",
+                "hen@gmail.com", "PHYSICIAN", 49, Gender.FEMALE);
+        Physician p3 = new Physician("1e3ac6aa-019a-4933-b152-5090b7ac56d4", "uwamahoro", "jule", "henry",
+                "henrye@gmail.com", "PHYSICIAN", 49, Gender.FEMALE);
 
         physicians.put(p1.getId(), p1);
         physicians.put(p2.getId(), p2);
+        physicians.put(p3.getId(), p3);
     }
 
     /**
      * This method populates the pharmacists map with sample data
      */
     public static void populatePharmacists() {
-        Pharmacist p1 = new Pharmacist("100", "Jack", 30, Gender.MALE);
-        Pharmacist p2 = new Pharmacist("200", "Ellen", 31, Gender.FEMALE);
+        Pharmacist p1 = new Pharmacist("fbf6e281-2ccb-4fa9-94dc-d1b14ab68d51", "dusinge", "felix", "fely",
+                "felixi@gmail.com", "PHARMACIST", 26, Gender.MALE);
+        Pharmacist p2 = new Pharmacist("20c14acc-3581-4366-9f4d-b7ee370016ec", "kwizera", "maniple", "manip",
+                "maniple@gmail.com", "PHARMACIST", 19, Gender.FEMALE);
+        Pharmacist p3 = new Pharmacist("20c14acc-3581-4366-9432-b7ee370016ec", "kwizera", "maniple", "manip",
+                "maniple@gmail.com", "PHARMACIST", 29, Gender.FEMALE);
 
         pharmacists.put(p1.getId(), p1);
         pharmacists.put(p2.getId(), p2);
+        pharmacists.put(p3.getId(), p3);
     }
 
     /**
      * This method populates the patientsMedicalRecords map with sample data
      */
     public static void populatePatientMedicalRecords() {
-        PatientMedicalRecordDTO p1 = new PatientMedicalRecordDTO("57282g2bbh", "1", "Cough and fever");
-        PatientMedicalRecordDTO p2 = new PatientMedicalRecordDTO("672g2by272", "2", "Typhoid");
+        PatientMedicalRecordDTO p1 = new PatientMedicalRecordDTO("8f99a086-05df-48da-9a00-5a3d7729aff1",
+                "Cough and fever");
+        PatientMedicalRecordDTO p2 = new PatientMedicalRecordDTO("9210f0a5-c8b2-44e9-9702-62d40a0baa93", "Typhoid");
 
         patientsMedicalRecords.put(p1.getId(), p1);
         patientsMedicalRecords.put(p2.getId(), p2);
@@ -69,6 +85,11 @@ public class MedicalDataService {
     // assign doctor and pharmacy
     public static void assignDoctorAndPharmacy(PatientMedicalRecordDTO patientMedicalRecord) {
         patientsMedicalRecords.put(patientMedicalRecord.getPatientId(), patientMedicalRecord);
+    }
+
+    public static String createRecord(PatientMedicalRecordDTO patientMedicalRecord) {
+        patientsMedicalRecords.put(patientMedicalRecord.getId(), patientMedicalRecord);
+        return patientMedicalRecord.getId();
     }
 
     public static List<PatientMedicalRecordDTO> getPatientMedicalRecordByPhysicianId(String physicianId) {
@@ -84,11 +105,15 @@ public class MedicalDataService {
     }
 
     public static List<Physician> getAllPhysicians() {
-        return new ArrayList<>(physicians.values());
+        List<Physician> physicianList = new ArrayList<>(physicians.values());
+        physicianList.sort(Comparator.comparing(Physician::getFirstName));
+        return physicianList;
     }
 
     public static List<Pharmacist> getAllPharmacists() {
-        return new ArrayList<>(pharmacists.values());
+        List<Pharmacist> pharmacistList = new ArrayList<>(pharmacists.values());
+        pharmacistList.sort(Comparator.comparingInt(Pharmacist::getAge));
+        return pharmacistList;
     }
 
     public static List<PatientMedicalRecordDTO> getAllPatientsMedicalRecords() {
@@ -133,6 +158,24 @@ public class MedicalDataService {
 
         return foundPatientsMedicalRecords;
     }
+
+    // public void printCustomerList() throws IOException{
+    // FileWriter pw = new FileWriter("F:\\data.csv");
+    // Iterator s = customerIterator();
+    // if (s.hasNext()==false){
+    // System.out.println("Empty");
+    // }
+    // while(s.hasNext()){
+    // Customer current = (Customer) s.next();
+    // System.out.println(current.toString()+"\n");
+    // pw.append(current.getName());
+    // pw.append(",");
+    // pw.append(current.getAddress());
+    // pw.append("\n");
+    // }
+    // pw.flush();
+    // pw.close();
+    // }
 
     public static PatientMedicalRecordDTO getPatientMedicalRecordById(String medicalRecordId) {
         return patientsMedicalRecords.get(medicalRecordId);

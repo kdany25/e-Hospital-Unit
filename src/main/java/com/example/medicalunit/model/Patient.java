@@ -2,83 +2,35 @@ package com.example.medicalunit.model;
 
 import com.example.medicalunit.model.Gender;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Represents a patient in the hospital.
  */
+@Getter
+@Setter
+@ToString
 public class Patient {
     private String id;
-    private String name;
+    private String firstName;
+    private String lastName;
+    private String userName;
+    private String role;
     private int age;
     private Gender gender;
+    private String email;
 
-    public Patient(String id, String name, int age, Gender gender) {
+    public Patient(String id, String firstName, String lastName, String userName, String email, String role, int age,
+            Gender gender) {
         this.id = id;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.email = email;
+        this.role = role;
         this.age = age;
-        this.gender = gender;
-    }
-
-    /**
-     * Gets the patient's ID.
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the patient's ID.
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets the patient's name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the patient's name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Gets the patient's age.
-     */
-    public int getAge() {
-        return age;
-    }
-
-    /**
-     * Sets the patient's age.
-     * Throws an IllegalArgumentException if the age is negative.
-     */
-    public void setAge(int age) {
-        if (age < 0) {
-            throw new IllegalArgumentException("Age cannot be negative.");
-        }
-        this.age = age;
-    }
-
-    /**
-     * Gets the patient's gender.
-     */
-    public Gender getGender() {
-        return gender;
-    }
-
-    /**
-     * Sets the patient's gender.
-     * Throws an IllegalArgumentException if the gender is not valid.
-     */
-    public void setGender(Gender gender) {
-        if (gender == null) {
-            throw new IllegalArgumentException("Gender cannot be null.");
-        }
         this.gender = gender;
     }
 }

@@ -1,8 +1,10 @@
 package com.example.medicalunit.dtos;
 
+import java.util.UUID;
+
 public class PatientMedicalRecordDTO {
 
-    private String id;
+    private final String id = UUID.randomUUID().toString();
     private String patientId;
     private String symptoms;
     private String physicianId;
@@ -11,19 +13,15 @@ public class PatientMedicalRecordDTO {
     private String medicines;
 
     public PatientMedicalRecordDTO(
-            String id, String patientId,
+           String patientId,
             String symptoms) {
-        this.id = id;
+
         this.patientId = patientId;
         this.symptoms = symptoms;
     }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getPatientId() {
