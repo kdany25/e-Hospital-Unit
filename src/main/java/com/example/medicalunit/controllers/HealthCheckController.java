@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.medicalunit.dtos.PatientMedicalRecordDTO;
-import com.example.medicalunit.model.Patient;
 import com.example.medicalunit.model.Pharmacist;
 import com.example.medicalunit.model.Physician;
 import com.example.medicalunit.services.MedicalDataService;
@@ -67,11 +66,8 @@ public class HealthCheckController {
     public ResponseEntity<String> grantAccessToDoctor(
             @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
 
-        Patient patient = MedicalDataService.getPatientById(patientMedicalRecord.getPatientId());
         Physician physician = MedicalDataService.getPhysicianById(patientMedicalRecord.getPhysicianId());
 
-        if (patient == null)
-            return new ResponseEntity<>("Invalid patient id", HttpStatus.NOT_FOUND);
         if (physician == null)
             return new ResponseEntity<>("Invalid physician id", HttpStatus.NOT_FOUND);
 
@@ -93,11 +89,8 @@ public class HealthCheckController {
     public ResponseEntity<String> grantAccessToPharmacy(
             @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
 
-        Patient patient = MedicalDataService.getPatientById(patientMedicalRecord.getPatientId());
         Pharmacist pharmacist = MedicalDataService.getPharmacistById(patientMedicalRecord.getPharmacistId());
 
-        if (patient == null)
-            return new ResponseEntity<>("Invalid patient id", HttpStatus.NOT_FOUND);
         if (pharmacist == null)
             return new ResponseEntity<>("Invalid pharmacist id", HttpStatus.NOT_FOUND);
 
@@ -175,14 +168,20 @@ public class HealthCheckController {
         return new ResponseEntity<>("Added medicine successfully", HttpStatus.OK);
     }
 
+    @PostMapping("/createRecord")
+    public ResponseEntity<String> createRecord(
+            @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
+
+        MedicalDataService.createRecord(patientMedicalRecord);
+        return new ResponseEntity<>(patientMedicalRecord.getId(), HttpStatus.OK);
+    }
+
     @PostMapping("/populateMedicalRecords")
     public ResponseEntity<String> populateMedicalRecords() {
 
         MedicalDataService.populatePatients();
         MedicalDataService.populatePharmacists();
         MedicalDataService.populatePhysicians();
-        MedicalDataService.populatePatientMedicalRecords();
-
         return new ResponseEntity<>("Populated medical records, patients, pharmacists, and physicians", HttpStatus.OK);
     }
 
