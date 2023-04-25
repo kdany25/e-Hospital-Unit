@@ -42,7 +42,7 @@ public class MedicalDataService {
      * This method populates the physicians map with sample data
      */
     public static void populatePhysicians() {
-        Physician p1 = new Physician("2d8e1969-8a78-4bb8-b5ff-7b0d7222c7fd", "umurerwa", "gisele", "gigi",
+        Physician p1 = new Physician("32349329-5eef-4882-b5aa-25f2fae1b5cd", "umurerwa", "gisele", "gigi",
                 "gisele@gmail.com", "PHYSICIAN", 41, Gender.FEMALE);
         Physician p2 = new Physician("d2aac6aa-019a-4933-b152-5090b7ac56d4", "uwamahoro", "henriette", "henry",
                 "henrye@gmail.com", "PHYSICIAN", 49, Gender.FEMALE);
@@ -55,7 +55,7 @@ public class MedicalDataService {
      * This method populates the pharmacists map with sample data
      */
     public static void populatePharmacists() {
-        Pharmacist p1 = new Pharmacist("485b00e6-6d81-4dde-ae40-a1327f521428", "dusinge", "felix", "fely",
+        Pharmacist p1 = new Pharmacist("fbf6e281-2ccb-4fa9-94dc-d1b14ab68d51", "dusinge", "felix", "fely",
                 "felixi@gmail.com", "PHARMACIST", 26, Gender.MALE);
         Pharmacist p2 = new Pharmacist("20c14acc-3581-4366-9f4d-b7ee370016ec", "kwizera", "maniple", "manip",
                 "maniple@gmail.com", "PHARMACIST", 29, Gender.FEMALE);
