@@ -1,7 +1,7 @@
 package com.example.medicalunit.services;
 
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +44,14 @@ public class MedicalDataService {
     public static void populatePhysicians() {
         Physician p1 = new Physician("32349329-5eef-4882-b5aa-25f2fae1b5cd", "umurerwa", "gisele", "gigi",
                 "gisele@gmail.com", "PHYSICIAN", 41, Gender.FEMALE);
-        Physician p2 = new Physician("d2aac6aa-019a-4933-b152-5090b7ac56d4", "uwamahoro", "henriette", "henry",
+        Physician p2 = new Physician("d2aac6aa-019a-4933-b152-5090b7ac56d4", "abimana", "henriette", "henry",
+                "hen@gmail.com", "PHYSICIAN", 49, Gender.FEMALE);
+        Physician p3 = new Physician("1e3ac6aa-019a-4933-b152-5090b7ac56d4", "uwamahoro", "jule", "henry",
                 "henrye@gmail.com", "PHYSICIAN", 49, Gender.FEMALE);
 
         physicians.put(p1.getId(), p1);
         physicians.put(p2.getId(), p2);
+        physicians.put(p3.getId(), p3);
     }
 
     /**
@@ -58,10 +61,13 @@ public class MedicalDataService {
         Pharmacist p1 = new Pharmacist("fbf6e281-2ccb-4fa9-94dc-d1b14ab68d51", "dusinge", "felix", "fely",
                 "felixi@gmail.com", "PHARMACIST", 26, Gender.MALE);
         Pharmacist p2 = new Pharmacist("20c14acc-3581-4366-9f4d-b7ee370016ec", "kwizera", "maniple", "manip",
+                "maniple@gmail.com", "PHARMACIST", 19, Gender.FEMALE);
+        Pharmacist p3 = new Pharmacist("20c14acc-3581-4366-9432-b7ee370016ec", "kwizera", "maniple", "manip",
                 "maniple@gmail.com", "PHARMACIST", 29, Gender.FEMALE);
 
         pharmacists.put(p1.getId(), p1);
         pharmacists.put(p2.getId(), p2);
+        pharmacists.put(p3.getId(), p3);
     }
 
     /**
@@ -99,11 +105,15 @@ public class MedicalDataService {
     }
 
     public static List<Physician> getAllPhysicians() {
-        return new ArrayList<>(physicians.values());
+        List<Physician> physicianList = new ArrayList<>(physicians.values());
+        physicianList.sort(Comparator.comparing(Physician::getFirstName));
+        return physicianList;
     }
 
     public static List<Pharmacist> getAllPharmacists() {
-        return new ArrayList<>(pharmacists.values());
+        List<Pharmacist> pharmacistList = new ArrayList<>(pharmacists.values());
+        pharmacistList.sort(Comparator.comparingInt(Pharmacist::getAge));
+        return pharmacistList;
     }
 
     public static List<PatientMedicalRecordDTO> getAllPatientsMedicalRecords() {
@@ -150,21 +160,21 @@ public class MedicalDataService {
     }
 
     // public void printCustomerList() throws IOException{
-    //     FileWriter pw = new FileWriter("F:\\data.csv");
-    //     Iterator s = customerIterator();
-    //     if (s.hasNext()==false){
-    //         System.out.println("Empty");
-    //     }
-    //     while(s.hasNext()){
-    //         Customer current  = (Customer) s.next();
-    //         System.out.println(current.toString()+"\n");
-    //         pw.append(current.getName());
-    //         pw.append(",");
-    //         pw.append(current.getAddress());
-    //         pw.append("\n");
-    //     }
-    //         pw.flush();
-    //         pw.close();
+    // FileWriter pw = new FileWriter("F:\\data.csv");
+    // Iterator s = customerIterator();
+    // if (s.hasNext()==false){
+    // System.out.println("Empty");
+    // }
+    // while(s.hasNext()){
+    // Customer current = (Customer) s.next();
+    // System.out.println(current.toString()+"\n");
+    // pw.append(current.getName());
+    // pw.append(",");
+    // pw.append(current.getAddress());
+    // pw.append("\n");
+    // }
+    // pw.flush();
+    // pw.close();
     // }
 
     public static PatientMedicalRecordDTO getPatientMedicalRecordById(String medicalRecordId) {
