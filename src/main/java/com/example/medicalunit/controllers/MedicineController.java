@@ -104,6 +104,14 @@ public class MedicineController {
         return MedicalDataService.getMedsPerPatientRecords(recordId);
     }
 
+    @PostMapping("/createRecord")
+    public ResponseEntity<String> createRecord(
+            @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
+
+        MedicalDataService.createRecord(patientMedicalRecord);
+        return new ResponseEntity<>(patientMedicalRecord.getId(), HttpStatus.OK);
+    }
+
     /**
      * Physician APis.
      */
@@ -164,7 +172,6 @@ public class MedicineController {
             return new ResponseEntity<>("Medication fetch failed", HttpStatus.BAD_REQUEST);
         }
     }
-
 
     // Prescribe medecine
     @PostMapping("/prescribeMedecine")
@@ -257,6 +264,30 @@ public class MedicineController {
         MedicalDataService.updatePatientMedicalRecordById(foundPatientMedicalRecord);
 
         return new ResponseEntity<>("Added medicine successfully", HttpStatus.OK);
+    }
+
+    @PostMapping("/createPatient")
+    public ResponseEntity<String> createPatient(
+            @RequestBody Patient patient) {
+
+        MedicalDataService.createPatient(patient);
+        return new ResponseEntity<>(patient.getId(), HttpStatus.OK);
+    }
+
+    @PostMapping("/createPharmacist")
+    public ResponseEntity<String> createPharmacist(
+            @RequestBody Pharmacist pharmacist) {
+
+        MedicalDataService.createPharmacist(pharmacist);
+        return new ResponseEntity<>(pharmacist.getId(), HttpStatus.OK);
+    }
+
+    @PostMapping("/createPhysician")
+    public ResponseEntity<String> createPhysician(
+            @RequestBody Physician physician) {
+
+        MedicalDataService.createPhysician(physician);
+        return new ResponseEntity<>(physician.getId(), HttpStatus.OK);
     }
 
 }
