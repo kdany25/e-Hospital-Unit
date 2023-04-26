@@ -28,7 +28,7 @@ public class MedicalUnitApplication extends SpringBootServletInitializer {
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(MedicalUnitApplication.class, args);
-		try (CSVWriter writer = new CSVWriter(new FileWriter("/users/kabalisadany/test.csv"))) {
+		try (CSVWriter writer = new CSVWriter(new FileWriter("test.csv"))) {
 			String[] header = { "Name", "Price", "Expiration Date" };
 			writer.writeNext(header);
 		} catch (IOException e) {

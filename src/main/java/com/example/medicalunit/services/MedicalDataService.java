@@ -117,7 +117,7 @@ public class MedicalDataService {
     }
 
     public static String addMedecine(MedecineDto medDto) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter("/users/kabalisadany/test.csv", true))) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter("test.csv", true))) {
             String[] header = { medDto.getMedName(), medDto.getMedPrice().toString(),
                     medDto.getMedExpiration().toString() };
             writer.writeNext(header);
@@ -129,7 +129,7 @@ public class MedicalDataService {
 
     public static List<MedecineDto> getMedecines() {
         List<MedecineDto> medecines = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader("/users/kabalisadany/test.csv"))) {
+        try (CSVReader reader = new CSVReader(new FileReader("test.csv"))) {
             String[] lineInArray;
             reader.skip(1);
             while ((lineInArray = reader.readNext()) != null) {
@@ -147,7 +147,7 @@ public class MedicalDataService {
 
     public static ResponseEntity<byte[]> getMedsPerPatientRecords(String id) {
 
-        try (CSVWriter writer = new CSVWriter(new FileWriter("/users/kabalisadany/prescription.csv"))) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter("prescription.csv"))) {
             // List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
             // .getAllPatientsMedicalRecordsByPatientId(id);
             PatientMedicalRecordDTO record = MedicalDataService.getPatientMedicalRecordById(id);
@@ -155,7 +155,7 @@ public class MedicalDataService {
                 String[] header = { y.getMedName(), y.getMedPrice().toString(), y.getMedExpiration().toString() };
                 writer.writeNext(header);
             });
-            Path path = Paths.get("/users/kabalisadany/prescription.csv");
+            Path path = Paths.get("prescription.csv");
             byte[] data = null;
             try {
                 data = Files.readAllBytes(path);
