@@ -1,6 +1,5 @@
 package com.example.medicalunit.model;
 
-import com.example.medicalunit.model.Gender;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
