@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.medicalunit.dtos.PatientMedicalRecordDTO;
+import com.example.medicalunit.model.Patient;
 import com.example.medicalunit.model.Pharmacist;
 import com.example.medicalunit.model.Physician;
 import com.example.medicalunit.services.MedicalDataService;
@@ -174,6 +175,30 @@ public class HealthCheckController {
 
         MedicalDataService.createRecord(patientMedicalRecord);
         return new ResponseEntity<>(patientMedicalRecord.getId(), HttpStatus.OK);
+    }
+
+    @PostMapping("/createPatient")
+    public ResponseEntity<String> createPatient(
+            @RequestBody Patient patient) {
+
+        MedicalDataService.createPatient(patient);
+        return new ResponseEntity<>(patient.getId(), HttpStatus.OK);
+    }
+
+    @PostMapping("/createPharmacist")
+    public ResponseEntity<String> createPharmacist(
+            @RequestBody Pharmacist pharmacist) {
+
+        MedicalDataService.createPharmacist(pharmacist);
+        return new ResponseEntity<>(pharmacist.getId(), HttpStatus.OK);
+    }
+
+    @PostMapping("/createPhysician")
+    public ResponseEntity<String> createPhysician(
+            @RequestBody Physician physician) {
+
+        MedicalDataService.createPhysician(physician);
+        return new ResponseEntity<>(physician.getId(), HttpStatus.OK);
     }
 
     @PostMapping("/populateMedicalRecords")

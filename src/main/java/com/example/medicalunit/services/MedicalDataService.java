@@ -92,6 +92,21 @@ public class MedicalDataService {
         return patientMedicalRecord.getId();
     }
 
+    public static String createPharmacist(Pharmacist pharmacist) {
+        pharmacists.put(pharmacist.getId(), pharmacist);
+        return pharmacist.getId();
+    }
+
+    public static String createPhysician(Physician physician) {
+        physicians.put(physician.getId(), physician);
+        return physician.getId();
+    }
+
+    public static String createPatient(Patient patient) {
+        patients.put(patient.getId(), patient);
+        return patient.getId();
+    }
+
     public static List<PatientMedicalRecordDTO> getPatientMedicalRecordByPhysicianId(String physicianId) {
         List<PatientMedicalRecordDTO> foundPatientsMedicalRecords = new ArrayList<>();
 
@@ -158,24 +173,6 @@ public class MedicalDataService {
 
         return foundPatientsMedicalRecords;
     }
-
-    // public void printCustomerList() throws IOException{
-    // FileWriter pw = new FileWriter("F:\\data.csv");
-    // Iterator s = customerIterator();
-    // if (s.hasNext()==false){
-    // System.out.println("Empty");
-    // }
-    // while(s.hasNext()){
-    // Customer current = (Customer) s.next();
-    // System.out.println(current.toString()+"\n");
-    // pw.append(current.getName());
-    // pw.append(",");
-    // pw.append(current.getAddress());
-    // pw.append("\n");
-    // }
-    // pw.flush();
-    // pw.close();
-    // }
 
     public static PatientMedicalRecordDTO getPatientMedicalRecordById(String medicalRecordId) {
         return patientsMedicalRecords.get(medicalRecordId);
