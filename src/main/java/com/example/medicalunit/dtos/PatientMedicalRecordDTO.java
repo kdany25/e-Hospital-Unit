@@ -1,5 +1,7 @@
 package com.example.medicalunit.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class PatientMedicalRecordDTO {
@@ -10,7 +12,7 @@ public class PatientMedicalRecordDTO {
     private String physicianId;
     private String pharmacistId;
     private String consultation;
-    private String medicines;
+    private List<MedecineDto> medicines = new ArrayList<>();
 
     public PatientMedicalRecordDTO(
            String patientId,
@@ -64,11 +66,11 @@ public class PatientMedicalRecordDTO {
         this.pharmacistId = pharmacistId;
     }
 
-    public String getMedicines() {
+    public List<MedecineDto> getMedicines() {
         return medicines;
     }
 
-    public void setMedicines(String medicines) {
+    public void setMedicines(List<MedecineDto> medicines) {
         this.medicines = medicines;
     }
 

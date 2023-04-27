@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.medicalunit.dtos.MedecineDto;
+import com.example.medicalunit.dtos.PatientMedecineDto;
 import com.example.medicalunit.dtos.PatientMedicalRecordDTO;
 import com.example.medicalunit.model.Patient;
 import com.example.medicalunit.model.Pharmacist;
@@ -13,42 +15,18 @@ import com.example.medicalunit.services.MedicalDataService;
 import java.util.List;
 
 @RestController
-public class HealthCheckController {
+public class MedicineController {
 
     @GetMapping("/health")
     public String healthCheck() {
         return "OK";
     }
 
-    @GetMapping("/medicalRecords")
-    public ResponseEntity<List<PatientMedicalRecordDTO>> getAllMedicalRecords(
-            @RequestParam(value = "physicianId", required = false) String physicianId,
-            @RequestParam(value = "pharmacistId", required = false) String pharmacistId,
-            @RequestParam(value = "patientId", required = false) String patientId) {
+    /**
+     * Patient APis.
+     */
 
-        if (physicianId != null) {
-            List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
-                    .getAllPatientsMedicalRecordsByPhysicianId(physicianId);
-            return new ResponseEntity<>(patientMedicalReport, HttpStatus.OK);
-        }
-
-        if (pharmacistId != null) {
-            List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
-                    .getAllPatientsMedicalRecordsByPharmacistId(pharmacistId);
-            return new ResponseEntity<>(patientMedicalReport, HttpStatus.OK);
-        }
-
-        if (patientId != null) {
-            List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
-                    .getAllPatientsMedicalRecordsByPatientId(patientId);
-            return new ResponseEntity<>(patientMedicalReport, HttpStatus.OK);
-        }
-
-        List<PatientMedicalRecordDTO> patientMedicalRecords = MedicalDataService.getAllPatientsMedicalRecords();
-
-        return new ResponseEntity<>(patientMedicalRecords, HttpStatus.OK);
-    }
-
+    // Get all physicisians
     @GetMapping("/physicians")
     public ResponseEntity<List<Physician>> getAllPhysicians() {
         List<Physician> physicians = MedicalDataService.getAllPhysicians();
@@ -56,6 +34,7 @@ public class HealthCheckController {
         return new ResponseEntity<>(physicians, HttpStatus.OK);
     }
 
+    // Get all pharmacists
     @GetMapping("/pharmacists")
     public ResponseEntity<List<Pharmacist>> getAllPharmacists() {
         List<Pharmacist> physicians = MedicalDataService.getAllPharmacists();
@@ -63,12 +42,16 @@ public class HealthCheckController {
         return new ResponseEntity<>(physicians, HttpStatus.OK);
     }
 
+    // Grant access to a doctor
     @PostMapping("/medicalRecords/assignDoctor")
     public ResponseEntity<String> grantAccessToDoctor(
             @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
 
+        Patient patient = MedicalDataService.getPatientById(patientMedicalRecord.getPatientId());
         Physician physician = MedicalDataService.getPhysicianById(patientMedicalRecord.getPhysicianId());
 
+        if (patient == null)
+            return new ResponseEntity<>("Invalid patient id", HttpStatus.NOT_FOUND);
         if (physician == null)
             return new ResponseEntity<>("Invalid physician id", HttpStatus.NOT_FOUND);
 
@@ -86,12 +69,17 @@ public class HealthCheckController {
         return new ResponseEntity<>("Granted access successfully", HttpStatus.OK);
     }
 
+    // Grant access to a pharmacist
+
     @PostMapping("/medicalRecords/assignPharmacist")
     public ResponseEntity<String> grantAccessToPharmacy(
             @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
 
+        Patient patient = MedicalDataService.getPatientById(patientMedicalRecord.getPatientId());
         Pharmacist pharmacist = MedicalDataService.getPharmacistById(patientMedicalRecord.getPharmacistId());
 
+        if (patient == null)
+            return new ResponseEntity<>("Invalid patient id", HttpStatus.NOT_FOUND);
         if (pharmacist == null)
             return new ResponseEntity<>("Invalid pharmacist id", HttpStatus.NOT_FOUND);
 
@@ -109,6 +97,26 @@ public class HealthCheckController {
         return new ResponseEntity<>("Granted access successfully", HttpStatus.OK);
     }
 
+    // Download prescription
+    @GetMapping("/downloadPrescription")
+    public ResponseEntity<?> getMedsPerRecord(
+            @RequestParam(value = "recordId", required = false) String recordId) {
+        return MedicalDataService.getMedsPerPatientRecords(recordId);
+    }
+
+    @PostMapping("/createRecord")
+    public ResponseEntity<String> createRecord(
+            @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
+
+        MedicalDataService.createRecord(patientMedicalRecord);
+        return new ResponseEntity<>(patientMedicalRecord.getId(), HttpStatus.OK);
+    }
+
+    /**
+     * Physician APis.
+     */
+
+    // consultation
     @PostMapping("/addConsultation")
     public ResponseEntity<String> provideConsultation(
             @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
@@ -137,6 +145,95 @@ public class HealthCheckController {
         MedicalDataService.updatePatientMedicalRecordById(foundPatientMedicalRecord);
 
         return new ResponseEntity<>("Added consultation successfully", HttpStatus.OK);
+    }
+
+    /**
+     * Pharmacist APis.
+     */
+    @PostMapping("/uploadMedecine")
+    public ResponseEntity<String> addMed(
+            @RequestBody MedecineDto medDto) {
+        String result = MedicalDataService.addMedecine(medDto);
+        if (result != null) {
+            return new ResponseEntity<>("Medication added", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Medication add failed", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Get all medecine
+    @GetMapping("/getMedecines")
+    public ResponseEntity<?> getMeds() {
+        List<MedecineDto> result = MedicalDataService.getMedecines();
+
+        if (result.iterator().hasNext()) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Medication fetch failed", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Prescribe medecine
+    @PostMapping("/prescribeMedecine")
+    public ResponseEntity<String> prescribeMed(
+            @RequestBody PatientMedecineDto patientMedDto) {
+        PatientMedicalRecordDTO patientMedicalRecord = MedicalDataService
+                .getPatientMedicalRecordById(patientMedDto.getRecordId());
+
+        Pharmacist pharmacist = MedicalDataService.getPharmacistById(patientMedicalRecord.getPharmacistId());
+
+        if (pharmacist == null)
+            return new ResponseEntity<>("Invalid pharmacist id", HttpStatus.BAD_REQUEST);
+
+        // find record
+        PatientMedicalRecordDTO foundPatientMedicalRecord = MedicalDataService
+                .getPatientMedicalRecordById(patientMedicalRecord.getId());
+
+        if (foundPatientMedicalRecord == null)
+            return new ResponseEntity<>("Invalid medical record id", HttpStatus.BAD_REQUEST);
+
+        if (!pharmacist.getId().equals(foundPatientMedicalRecord.getPharmacistId()))
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+
+        // add medicine
+        List<MedecineDto> res = foundPatientMedicalRecord.getMedicines();
+        res.add(new MedecineDto(patientMedDto.getMedName(), patientMedDto.getMedPrice(),
+                patientMedDto.getMedExpiration()));
+        foundPatientMedicalRecord.setMedicines(res);
+
+        MedicalDataService.updatePatientMedicalRecordById(foundPatientMedicalRecord);
+
+        return new ResponseEntity<>("Added medicine successfully", HttpStatus.OK);
+    }
+
+    // get all medical records
+    @GetMapping("/medicalRecords")
+    public ResponseEntity<List<PatientMedicalRecordDTO>> getAllMedicalRecords(
+            @RequestParam(value = "physicianId", required = false) String physicianId,
+            @RequestParam(value = "pharmacistId", required = false) String pharmacistId,
+            @RequestParam(value = "patientId", required = false) String patientId) {
+
+        if (physicianId != null) {
+            List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
+                    .getAllPatientsMedicalRecordsByPhysicianId(physicianId);
+            return new ResponseEntity<>(patientMedicalReport, HttpStatus.OK);
+        }
+
+        if (pharmacistId != null) {
+            List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
+                    .getAllPatientsMedicalRecordsByPharmacistId(pharmacistId);
+            return new ResponseEntity<>(patientMedicalReport, HttpStatus.OK);
+        }
+
+        if (patientId != null) {
+            List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
+                    .getAllPatientsMedicalRecordsByPatientId(patientId);
+            return new ResponseEntity<>(patientMedicalReport, HttpStatus.OK);
+        }
+
+        List<PatientMedicalRecordDTO> patientMedicalRecords = MedicalDataService.getAllPatientsMedicalRecords();
+
+        return new ResponseEntity<>(patientMedicalRecords, HttpStatus.OK);
     }
 
     @PostMapping("/addMedicine")
@@ -169,14 +266,6 @@ public class HealthCheckController {
         return new ResponseEntity<>("Added medicine successfully", HttpStatus.OK);
     }
 
-    @PostMapping("/createRecord")
-    public ResponseEntity<String> createRecord(
-            @RequestBody PatientMedicalRecordDTO patientMedicalRecord) {
-
-        MedicalDataService.createRecord(patientMedicalRecord);
-        return new ResponseEntity<>(patientMedicalRecord.getId(), HttpStatus.OK);
-    }
-
     @PostMapping("/createPatient")
     public ResponseEntity<String> createPatient(
             @RequestBody Patient patient) {
@@ -199,15 +288,6 @@ public class HealthCheckController {
 
         MedicalDataService.createPhysician(physician);
         return new ResponseEntity<>(physician.getId(), HttpStatus.OK);
-    }
-
-    @PostMapping("/populateMedicalRecords")
-    public ResponseEntity<String> populateMedicalRecords() {
-
-        MedicalDataService.populatePatients();
-        MedicalDataService.populatePharmacists();
-        MedicalDataService.populatePhysicians();
-        return new ResponseEntity<>("Populated medical records, patients, pharmacists, and physicians", HttpStatus.OK);
     }
 
 }

@@ -1,16 +1,27 @@
 package com.example.medicalunit.services;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
+import com.example.medicalunit.dtos.MedecineDto;
 import com.example.medicalunit.dtos.PatientMedicalRecordDTO;
 import com.example.medicalunit.model.Patient;
 import com.example.medicalunit.model.Pharmacist;
 import com.example.medicalunit.model.Physician;
-import com.example.medicalunit.model.Gender;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 /**
  * This class manages medical data and provides methods to retrieve, update and
@@ -24,63 +35,7 @@ public class MedicalDataService {
     private static final Map<String, Physician> physicians = new HashMap<>();
     private static final Map<String, Pharmacist> pharmacists = new HashMap<>();
 
-    /**
-     * This method populates the patients map with sample data
-     */
-    public static void populatePatients() {
-        Patient p1 = new Patient("8f99a086-05df-48da-9a00-5a3d7729aff1", "muhire", "philippe", "philly",
-                "philipe@gmail.com", "PATIENT", 18, Gender.MALE);
 
-        Patient p2 = new Patient("9210f0a5-c8b2-44e9-9702-62d40a0baa93", "habimana", "yannick", "yanny",
-                "yannick@gmail.com", "PATIENT", 29, Gender.MALE);
-
-        patients.put(p1.getId(), p1);
-        patients.put(p2.getId(), p2);
-    }
-
-    /**
-     * This method populates the physicians map with sample data
-     */
-    public static void populatePhysicians() {
-        Physician p1 = new Physician("32349329-5eef-4882-b5aa-25f2fae1b5cd", "umurerwa", "gisele", "gigi",
-                "gisele@gmail.com", "PHYSICIAN", 41, Gender.FEMALE);
-        Physician p2 = new Physician("d2aac6aa-019a-4933-b152-5090b7ac56d4", "abimana", "henriette", "henry",
-                "hen@gmail.com", "PHYSICIAN", 49, Gender.FEMALE);
-        Physician p3 = new Physician("1e3ac6aa-019a-4933-b152-5090b7ac56d4", "uwamahoro", "jule", "henry",
-                "henrye@gmail.com", "PHYSICIAN", 49, Gender.FEMALE);
-
-        physicians.put(p1.getId(), p1);
-        physicians.put(p2.getId(), p2);
-        physicians.put(p3.getId(), p3);
-    }
-
-    /**
-     * This method populates the pharmacists map with sample data
-     */
-    public static void populatePharmacists() {
-        Pharmacist p1 = new Pharmacist("fbf6e281-2ccb-4fa9-94dc-d1b14ab68d51", "dusinge", "felix", "fely",
-                "felixi@gmail.com", "PHARMACIST", 26, Gender.MALE);
-        Pharmacist p2 = new Pharmacist("20c14acc-3581-4366-9f4d-b7ee370016ec", "kwizera", "maniple", "manip",
-                "maniple@gmail.com", "PHARMACIST", 19, Gender.FEMALE);
-        Pharmacist p3 = new Pharmacist("20c14acc-3581-4366-9432-b7ee370016ec", "kwizera", "maniple", "manip",
-                "maniple@gmail.com", "PHARMACIST", 29, Gender.FEMALE);
-
-        pharmacists.put(p1.getId(), p1);
-        pharmacists.put(p2.getId(), p2);
-        pharmacists.put(p3.getId(), p3);
-    }
-
-    /**
-     * This method populates the patientsMedicalRecords map with sample data
-     */
-    public static void populatePatientMedicalRecords() {
-        PatientMedicalRecordDTO p1 = new PatientMedicalRecordDTO("8f99a086-05df-48da-9a00-5a3d7729aff1",
-                "Cough and fever");
-        PatientMedicalRecordDTO p2 = new PatientMedicalRecordDTO("9210f0a5-c8b2-44e9-9702-62d40a0baa93", "Typhoid");
-
-        patientsMedicalRecords.put(p1.getId(), p1);
-        patientsMedicalRecords.put(p2.getId(), p2);
-    }
 
     // assign doctor and pharmacy
     public static void assignDoctorAndPharmacy(PatientMedicalRecordDTO patientMedicalRecord) {
@@ -159,6 +114,65 @@ public class MedicalDataService {
         }
 
         return foundPatientsMedicalRecords;
+    }
+
+    public static String addMedecine(MedecineDto medDto) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter("test.csv", true))) {
+            String[] header = { medDto.getMedName(), medDto.getMedPrice().toString(),
+                    medDto.getMedExpiration().toString() };
+            writer.writeNext(header);
+            return "success";
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<MedecineDto> getMedecines() {
+        List<MedecineDto> medecines = new ArrayList<>();
+        try (CSVReader reader = new CSVReader(new FileReader("test.csv"))) {
+            String[] lineInArray;
+            reader.skip(1);
+            while ((lineInArray = reader.readNext()) != null) {
+                SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+                Date date = format.parse(lineInArray[2]);
+                medecines.add(new MedecineDto(lineInArray[0], Double.parseDouble(lineInArray[1]), date));
+            }
+            return medecines;
+        } catch (IOException | CsvException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ResponseEntity<byte[]> getMedsPerPatientRecords(String id) {
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter("prescription.csv"))) {
+            // List<PatientMedicalRecordDTO> patientMedicalReport = MedicalDataService
+            // .getAllPatientsMedicalRecordsByPatientId(id);
+            PatientMedicalRecordDTO record = MedicalDataService.getPatientMedicalRecordById(id);
+            record.getMedicines().forEach(y -> {
+                String[] header = { y.getMedName(), y.getMedPrice().toString(), y.getMedExpiration().toString() };
+                writer.writeNext(header);
+            });
+            Path path = Paths.get("prescription.csv");
+            byte[] data = null;
+            try {
+                data = Files.readAllBytes(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("text/csv"));
+            headers.setContentDispositionFormData("attachment", "file.csv");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            ResponseEntity<byte[]> response = new ResponseEntity<>(data, headers, HttpStatus.OK);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<PatientMedicalRecordDTO> getAllPatientsMedicalRecordsByPatientId(String patientId) {
