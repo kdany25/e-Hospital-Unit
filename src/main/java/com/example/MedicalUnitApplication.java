@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 
 /**
  * Initializes the hospital management application.
@@ -25,10 +26,18 @@ public class MedicalUnitApplication extends SpringBootServletInitializer {
 
 	/**
 	 * Starts the application.
+	 * 
+	 * @throws IOException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		SpringApplication.run(MedicalUnitApplication.class, args);
-		try (CSVWriter writer = new CSVWriter(new FileWriter("test.csv"))) {
+		String workingDir = System.getProperty("user.dir");
+		File file = new File(workingDir + "/medecine.csv");
+
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		try (CSVWriter writer = new CSVWriter(new FileWriter(file))) {
 			String[] header = { "Name", "Price", "Expiration Date" };
 			writer.writeNext(header);
 		} catch (IOException e) {

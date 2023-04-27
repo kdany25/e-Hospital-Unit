@@ -35,8 +35,6 @@ public class MedicalDataService {
     private static final Map<String, Physician> physicians = new HashMap<>();
     private static final Map<String, Pharmacist> pharmacists = new HashMap<>();
 
-
-
     // assign doctor and pharmacy
     public static void assignDoctorAndPharmacy(PatientMedicalRecordDTO patientMedicalRecord) {
         patientsMedicalRecords.put(patientMedicalRecord.getPatientId(), patientMedicalRecord);
@@ -117,7 +115,8 @@ public class MedicalDataService {
     }
 
     public static String addMedecine(MedecineDto medDto) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter("test.csv", true))) {
+        String workingDir = System.getProperty("user.dir");
+        try (CSVWriter writer = new CSVWriter(new FileWriter(workingDir + "/medecine.csv", true))) {
             String[] header = { medDto.getMedName(), medDto.getMedPrice().toString(),
                     medDto.getMedExpiration().toString() };
             writer.writeNext(header);
@@ -129,7 +128,8 @@ public class MedicalDataService {
 
     public static List<MedecineDto> getMedecines() {
         List<MedecineDto> medecines = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader("test.csv"))) {
+        String workingDir = System.getProperty("user.dir");
+        try (CSVReader reader = new CSVReader(new FileReader(workingDir + "/medecine.csv"))) {
             String[] lineInArray;
             reader.skip(1);
             while ((lineInArray = reader.readNext()) != null) {
