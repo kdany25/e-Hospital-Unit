@@ -6,9 +6,6 @@ public class PatientMedecineDto extends MedecineDto{
 private String recordId;
 private String pharmacistId;
 
-    public PatientMedecineDto(String medName, Double medPrice, Date medExpiration) {
-        super(medName, medPrice, medExpiration);
-    }
     public PatientMedecineDto(String recordId, String medName, Double medPrice, Date medExpiration) {
         super(medName, medPrice, medExpiration);
         this.recordId = recordId;

@@ -177,13 +177,15 @@ public class MedicineController {
     @PostMapping("/prescribeMedecine")
     public ResponseEntity<String> prescribeMed(
             @RequestBody PatientMedecineDto patientMedDto) {
+
         PatientMedicalRecordDTO patientMedicalRecord = MedicalDataService
                 .getPatientMedicalRecordById(patientMedDto.getRecordId());
 
-        Pharmacist pharmacist = MedicalDataService.getPharmacistById(patientMedicalRecord.getPharmacistId());
+        // Pharmacist pharmacist =
+        // MedicalDataService.getPharmacistById(patientMedicalRecord.getPharmacistId());
 
-        if (pharmacist == null)
-            return new ResponseEntity<>("Invalid pharmacist id", HttpStatus.BAD_REQUEST);
+        // if (pharmacist == null)
+        // return new ResponseEntity<>("Invalid pharmacist id", HttpStatus.BAD_REQUEST);
 
         // find record
         PatientMedicalRecordDTO foundPatientMedicalRecord = MedicalDataService
@@ -192,17 +194,18 @@ public class MedicineController {
         if (foundPatientMedicalRecord == null)
             return new ResponseEntity<>("Invalid medical record id", HttpStatus.BAD_REQUEST);
 
-        if (!pharmacist.getId().equals(foundPatientMedicalRecord.getPharmacistId()))
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        // if (!pharmacist.getId().equals(foundPatientMedicalRecord.getPharmacistId()))
+        // return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
 
         // add medicine
         List<MedecineDto> res = foundPatientMedicalRecord.getMedicines();
+
         res.add(new MedecineDto(patientMedDto.getMedName(), patientMedDto.getMedPrice(),
                 patientMedDto.getMedExpiration()));
+
         foundPatientMedicalRecord.setMedicines(res);
 
         MedicalDataService.updatePatientMedicalRecordById(foundPatientMedicalRecord);
-
         return new ResponseEntity<>("Added medicine successfully", HttpStatus.OK);
     }
 
