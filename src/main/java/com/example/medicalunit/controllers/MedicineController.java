@@ -157,7 +157,7 @@ public class MedicineController {
         if (result != null) {
             return new ResponseEntity<>("Medication added", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Medication add failed", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("add Medication failed", HttpStatus.BAD_REQUEST);
         }
     }
 
